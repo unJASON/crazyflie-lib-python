@@ -1,0 +1,5 @@
+uri,rangingcnt10,rangingcnt20,rangingcnt30,rangingcnt40
+radio://0/10/2M,0,3563,3540,3701
+radio://0/20/2M,3571,0,3517,3535
+radio://0/30/2M,3489,3509,0,3581
+radio://0/40/2M,3718,3535,3643,0
