@@ -42,7 +42,7 @@ def distance_measurement():
         lpos.start()
         time.sleep(200)
     df = pd.DataFrame(dt,columns=['distance10','distance20','distance30','distance40','distance50','time'])
-    df.to_csv('./group_test_10203040_40.csv',index=False)
+    df.to_csv('./freq_10_rd41_40_rd41.csv',index=False)
     print("done")
     return
 
@@ -58,22 +58,22 @@ def pos_data_cnt(timestamp, data, logconf):
     dt.append((position[0],position[1],position[2],position[3],position[4],time.time()))
 
 
-def distance_measurement_CNT():
-    with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
-        lpos = LogConfig(name='distance', period_in_ms=10)
-        lpos.add_variable('rangingCNT.rangingcnt10')
-        lpos.add_variable('rangingCNT.rangingcnt20')
-        lpos.add_variable('rangingCNT.rangingcnt30')
-        lpos.add_variable('rangingCNT.rangingcnt40')
-        lpos.add_variable('rangingCNT.rangingcnt50')
-        scf.cf.log.add_config(lpos)
-        lpos.data_received_cb.add_callback(pos_data_cnt)
-        lpos.start()
-        time.sleep(200)
-    df = pd.DataFrame(dt,columns=['distance10','distance20','distance30','distance40','distance50','time'])
-    df.to_csv('./group_test_10203040_40_CNT.csv',index=False)
-    print("done")
-    return
+# def distance_measurement_CNT():
+#     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
+#         lpos = LogConfig(name='distance', period_in_ms=10)
+#         lpos.add_variable('rangingCNT.rangingcnt10')
+#         lpos.add_variable('rangingCNT.rangingcnt20')
+#         lpos.add_variable('rangingCNT.rangingcnt30')
+#         lpos.add_variable('rangingCNT.rangingcnt40')
+#         lpos.add_variable('rangingCNT.rangingcnt50')
+#         scf.cf.log.add_config(lpos)
+#         lpos.data_received_cb.add_callback(pos_data_cnt)
+#         lpos.start()
+#         time.sleep(200)
+#     df = pd.DataFrame(dt,columns=['distance10','distance20','distance30','distance40','distance50','time'])
+#     df.to_csv('./group_test_10203040_40_CNT.csv',index=False)
+#     print("done")
+#     return
 
 if __name__ == '__main__':
     # init drivers mandatory
