@@ -5,11 +5,11 @@ import numpy as np
 # 研究 测距频率的适应 的 关系
 
 pairs_mapper={
-    "distance10":"30ms-30ms",
-    "distance20":"30ms-40ms",
-    "distance30":"30ms-50ms",
-    "distance40":"30ms-60ms",
-    "distance50":"30ms-70ms"
+    "distance10":"T=30ms",
+    "distance20":"T=40ms",
+    "distance30":"T=50ms",
+    "distance40":"T=60ms",
+    "distance50":"T=70ms"
 }
 
 #记录测距次数
@@ -75,11 +75,38 @@ if __name__ == '__main__':
         data_plt = pd.concat([data_plt,temp_df],axis=0)
 
 
+    #画图
+    # plt.figure()
+    # ax = sns.lineplot(y='ranging counts', x='time',
+    #                   hue='ranging pairs',
+    #                   style='type',
+    #                   data=data_plt)
+    # plt.show()
+
     # 画图
-    plt.figure()
+    # fig=plt.figure()
     sns.lineplot(y='ranging counts',x = 'time',
-                 hue='ranging pairs', style='type',data=data_plt)
+                 hue='ranging pairs',
+                 data=data_plt[data_plt.type == 'swarm ranging'])
+    sns.lineplot(y='ranging counts',x = 'time',
+                 hue='ranging pairs',
+                 data=data_plt[data_plt.type == 'pair ranging'])
+    ax = plt.gca()
+    # ax.lines[]
+    ax.lines[7].set_linestyle("--")
+    ax.lines[8].set_linestyle("--")
+    ax.lines[9].set_linestyle("--")
+    ax.lines[11].set_linestyle("--")
+    ax.lines[12].set_linestyle("--")
+    ax.lines[13].set_linestyle("--")
+    handles, labels = ax.get_legend_handles_labels()
+    handles.remove(handles[0])
+    handles.remove(handles[3])
+    labels.remove(labels[0])
+    labels.remove(labels[3])
+    ax.legend(handles=handles,labels=labels)
     plt.show()
+    print('done')
 
     # 分布
     # plt.figure()

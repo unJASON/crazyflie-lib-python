@@ -33,6 +33,20 @@ filepath=[
     './latency_100ms_300cm.csv',
 ]
 
+def pre_data(data):
+    data_li = []
+    check = -1
+    data_mean = data.mean()
+    for ele in data:
+        if ele == check:
+            pass
+        else:
+            #去掉离群的点
+            if np.fabs(ele - data_mean) <0.3:
+                data_li.append(ele)
+            check = ele
+    print(len(data_li),len(data))
+    return data_li
 
 if __name__ == '__main__':
     df = pd.DataFrame()
@@ -52,13 +66,22 @@ if __name__ == '__main__':
 
         df =pd.concat([df,ranging_dt],axis=0)
 
-    plt.figure()
-    sns.catplot(x="period(ms)",y="distance(m)",hue="ground truth",kind="bar",data=df)
-    plt.show()
-    plt.figure()
-    sns.catplot(x="period(ms)", y="distance(m)", hue="ground truth", kind="point", data=df)
+    # plt.figure()
+    # sns.catplot(x="period(ms)",y="distance(m)",hue="ground truth",kind="bar",data=df)
+    # plt.show()
+    # plt.figure()
+    # sns.catplot(x="period(ms)", y="distance(m)", hue="ground truth", kind="point", data=df)
+    # plt.show()
+
+    # 画分布子图
+    col_num = 4
+    row_num = 6
+    fig,axes = plt.subplots(row_num,col_num,figsize=(16,13))
+    for idx,ele in enumerate(filepath):
+        ranging_dt = pd.read_csv(filepath_or_buffer=ele)
+        # ranging_dt.rename(columns={'distance':'distance(m)'},inplace=True)
+        data_li=pre_data(ranging_dt['distance'])
+        sns.distplot(data_li,ax=axes[idx%row_num,idx//row_num])
+    # plt.tight_layout()
     plt.show()
 
-    plt.figure()
-    sns.catplot(x="period(ms)", y="distance(m)", hue="ground truth", kind="swarm", data=df)
-    plt.show()
