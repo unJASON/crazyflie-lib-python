@@ -3,6 +3,17 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 mapper={}
+mapper["tokenring"]=[
+    './tokenring_2.csv',
+    './tokenring_3.csv',
+    './tokenring_4.csv',
+    './tokenring_5.csv',
+    './tokenring_6.csv',
+    './tokenring_7.csv',
+    './tokenring_8.csv',
+    './tokenring_9.csv',
+]
+
 mapper["50ms"]=[
 './comparison_50ms_2.csv',
 './comparison_50ms_3.csv',
@@ -54,10 +65,18 @@ if __name__ == '__main__':
         for idx,ele in enumerate(v):
             rang_cnt = pd.read_csv(filepath_or_buffer=ele)
             nums = 0
+            check = 0
             for idx,rows in rang_cnt.iterrows():
                 for rg_col in rg_cnt_li:
-                    nums = nums + rows[rg_col]
+                    if rows[rg_col] == 0:
+                        pass
+                    else:
+                        check = check + 1
+                        nums = nums + rows[rg_col]
+            nums = nums/check
             line_mapper[k].append(nums)
+
+
     plt.figure()
     for k,v in line_mapper.items():
         sns.lineplot(x=[i for i in range(2,len(v)+2)],y=v)

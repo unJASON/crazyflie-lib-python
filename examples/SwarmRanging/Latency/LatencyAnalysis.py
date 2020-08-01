@@ -66,12 +66,12 @@ if __name__ == '__main__':
 
         df =pd.concat([df,ranging_dt],axis=0)
 
-    # plt.figure()
-    # sns.catplot(x="period(ms)",y="distance(m)",hue="ground truth",kind="bar",data=df)
-    # plt.show()
-    # plt.figure()
-    # sns.catplot(x="period(ms)", y="distance(m)", hue="ground truth", kind="point", data=df)
-    # plt.show()
+    plt.figure()
+    sns.catplot(x="period(ms)",y="distance(m)",hue="ground truth",kind="bar",data=df)
+    plt.show()
+    plt.figure()
+    sns.catplot(x="period(ms)", y="distance(m)", hue="ground truth", kind="point", data=df)
+    plt.show()
 
     # 画分布子图
     col_num = 4
@@ -81,6 +81,7 @@ if __name__ == '__main__':
         ranging_dt = pd.read_csv(filepath_or_buffer=ele)
         # ranging_dt.rename(columns={'distance':'distance(m)'},inplace=True)
         data_li=pre_data(ranging_dt['distance'])
+        print(idx%row_num,idx//row_num,np.var(data_li)*10000)
         sns.distplot(data_li,ax=axes[idx%row_num,idx//row_num])
     # plt.tight_layout()
     plt.show()

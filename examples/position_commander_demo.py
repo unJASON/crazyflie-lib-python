@@ -35,9 +35,9 @@ import cflib.crtp
 from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.positioning.position_hl_commander import PositionHlCommander
-
+import time
 # URI to the Crazyflie to connect to
-uri = 'radio://0/80/2M/E7E7E7E7E7'
+uri = 'radio://0/10/2M/E7E7E7E7E7'
 
 
 def slightly_more_complex_usage():
@@ -69,10 +69,13 @@ def slightly_more_complex_usage():
 def simple_sequence():
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         with PositionHlCommander(scf) as pc:
-            pc.forward(1.0)
-            pc.left(1.0)
-            pc.back(1.0)
-            pc.go_to(0.0, 0.0, 1.0)
+            # pc.forward(1.0)
+            # pc.left(0.5)
+            # pc.back(1.0)
+            pc.go_to(-0.5, 0.0, 0.5)
+            time.sleep(5)
+            pc.go_to(3.0,0.0,0.5)
+            time.sleep(2)
 
 
 if __name__ == '__main__':

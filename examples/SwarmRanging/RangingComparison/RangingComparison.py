@@ -12,7 +12,7 @@ import time
 import pandas as pd
 
 # URI to the Crazyflie to connect to
-
+# 随机窗口大小为81
 # 研究 集群收发包 及 测距 现象
 uri1 = "radio://0/10/2M"
 mapper_start={}
@@ -151,7 +151,7 @@ def distance_measurement(uri):
         dt_col.append(k)
         dt.append(v-mapper_start[k])
     df = pd.DataFrame([dt], columns=dt_col)
-    df.to_csv('./comparison_50ms_9.csv', index=False)
+    df.to_csv('./comparison_50ms_3_2.csv', index=False)
     return
 
 if __name__ == '__main__':
