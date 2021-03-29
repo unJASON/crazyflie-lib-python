@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 #
 #     ||          ____  _ __
@@ -37,7 +37,7 @@ Crazyflie can then be controlled by using keyboard input:
 
 There's additional setting for (see constants below):
  * Plotting the downwards sensor
- * Plotting the estimated Crazyflie position
+ * Plotting the estimated Crazyflie postition
  * Max threshold for sensors
  * Speed factor that set's how fast the Crazyflie moves
 
@@ -82,7 +82,7 @@ if len(sys.argv) > 1:
 PLOT_CF = False
 # Enable plotting of down sensor
 PLOT_SENSOR_DOWN = False
-# Set the sensor threshold (in mm)
+# Set the sensor threashold (in mm)
 SENSOR_TH = 2000
 # Set the speed factor for moving and rotating
 SPEED_FACTOR = 0.3
@@ -102,7 +102,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.canvas.native)
 
-        cflib.crtp.init_drivers()
+        cflib.crtp.init_drivers(enable_debug_driver=False)
         self.cf = Crazyflie(ro_cache=None, rw_cache='cache')
 
         # Connect callbacks from the Crazyflie API

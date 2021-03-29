@@ -29,9 +29,14 @@ This class provides synchronous access to log data from the Crazyflie.
 It acts as an iterator and returns the next value on each iteration.
 If no value is available it blocks until log data is received again.
 """
-from queue import Queue
+import sys
 
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
+
+if sys.version_info < (3,):
+    from Queue import Queue
+else:
+    from queue import Queue
 
 
 class SyncLogger:

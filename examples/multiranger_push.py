@@ -25,7 +25,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA  02110-1301, USA.
 """
-Example scripts that allows a user to "push" the Crazyflie 2.0 around
+Example scipts that allows a user to "push" the Crazyflie 2.0 around
 using your hands while it's hovering.
 
 This examples uses the Flow and Multi-ranger decks to measure distances
@@ -70,8 +70,8 @@ def is_close(range):
 
 
 if __name__ == '__main__':
-    # Initialize the low-level drivers
-    cflib.crtp.init_drivers()
+    # Initialize the low-level drivers (don't list the debug drivers)
+    cflib.crtp.init_drivers(enable_debug_driver=False)
 
     cf = Crazyflie(rw_cache='./cache')
     with SyncCrazyflie(URI, cf=cf) as scf:

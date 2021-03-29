@@ -26,7 +26,7 @@ This script implements a simple matrix light printer to be used with a
 camera with open shutter in a dark room.
 
 It requires a Crazyflie capable of controlling its position and with
-a Led ring attached to it. A piece of sticky paper can be attached on
+a Led ring attached to it. A piece of sicky paper can be attached on
 the led ring to orient the ring light toward the front.
 
 To control it position, Crazyflie requires an absolute positioning
@@ -106,7 +106,7 @@ def matrix_print(cf, pc, image_def):
 
 
 if __name__ == '__main__':
-    cflib.crtp.init_drivers()
+    cflib.crtp.init_drivers(enable_debug_driver=False)
 
     image_def = ImageDef('monalisa.png')
 

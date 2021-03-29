@@ -22,56 +22,67 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA  02110-1301, USA.
 """
-Example of how to read the Lighthouse base station geometry and
-calibration memory from a Crazyflie
+Example of how to write to the Lighthouse base station geometry memory in a
+Crazyflie
 """
 import logging
-from threading import Event
+import time
 
 import cflib.crtp  # noqa
 from cflib.crazyflie import Crazyflie
-from cflib.crazyflie.mem import LighthouseMemHelper
+from cflib.crazyflie.mem import LighthouseBsGeometry
+from cflib.crazyflie.mem import MemoryElement
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
-
 # Only output errors from the logging framework
+
 logging.basicConfig(level=logging.ERROR)
 
 
-class ReadMem:
-    def __init__(self, uri):
-        self._event = Event()
+class WriteMem:
+    def __init__(self, uri, bs1, bs2):
+        self.data_written = False
 
         with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
-            helper = LighthouseMemHelper(scf.cf)
+            mems = scf.cf.mem.get_mems(MemoryElement.TYPE_LH)
 
-            helper.read_all_geos(self._geo_read_ready)
-            self._event.wait()
+            count = len(mems)
+            if count != 1:
+                raise Exception('Unexpected nr of memories found:', count)
 
-            self._event.clear()
+            mems[0].geometry_data = [bs1, bs2]
 
-            helper.read_all_calibs(self._calib_read_ready)
-            self._event.wait()
+            print('Writing data')
+            mems[0].write_data(self._data_written)
 
-    def _geo_read_ready(self, geo_data):
-        for id, data in geo_data.items():
-            print('---- Geometry for base station', id + 1)
-            data.dump()
-            print()
-        self._event.set()
+            while not self.data_written:
+                time.sleep(1)
 
-    def _calib_read_ready(self, calib_data):
-        for id, data in calib_data.items():
-            print('---- Calibration data for base station', id + 1)
-            data.dump()
-            print()
-        self._event.set()
+    def _data_written(self, mem, addr):
+        self.data_written = True
+        print('Data written')
 
 
 if __name__ == '__main__':
     # URI to the Crazyflie to connect to
-    uri = 'radio://0/80'
+    uri = 'radio://0/80/2M'
 
-    # Initialize the low-level drivers
-    cflib.crtp.init_drivers()
+    # Initialize the low-level drivers (don't list the debug drivers)
+    cflib.crtp.init_drivers(enable_debug_driver=False)
 
-    ReadMem(uri)
+    bs1 = LighthouseBsGeometry()
+    bs1.origin = [1.0, 2.0, 3.0]
+    bs1.rotation_matrix = [
+        [4.0, 5.0, 6.0],
+        [7.0, 8.0, 9.0],
+        [10.0, 11.0, 12.0],
+    ]
+
+    bs2 = LighthouseBsGeometry()
+    bs2.origin = [21.0, 22.0, 23.0]
+    bs2.rotation_matrix = [
+        [24.0, 25.0, 26.0],
+        [27.0, 28.0, 29.0],
+        [30.0, 31.0, 32.0],
+    ]
+
+    WriteMem(uri, bs1, bs2)

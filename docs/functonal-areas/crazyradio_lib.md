@@ -12,7 +12,7 @@ Theory of operation
 -------------------
 
 The Crazyradio is configured in PTX mode which means that it will start
-all communication. If a device in PRX mode is on the same address,
+all comunication. If a device in PRX mode is on the same address,
 channel and datarate, the device will send back an ack packet that may
 contains data.
 
@@ -27,7 +27,7 @@ contains data.
 
 This is an example on how to use the lib:
 
-``` .python
+``` {.python}
 import crazyradio
 
 cr = crazyradio.Crazyradio()

@@ -8,8 +8,6 @@
 #
 #  Copyright (C) 2019 Bitcraze AB
 #
-#  Crazyflie Nano Quadcopter Client
-#
 #  This program is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License
 #  as published by the Free Software Foundation; either version 2
@@ -24,51 +22,48 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA  02110-1301, USA.
 """
-Simple example that connects to the crazyflie at `URI` and writes to
-parameters that control the LED-ring,
-it has been tested with (and designed for) the LED-ring deck.
-
-Change the URI variable to your Crazyflie configuration.
+Example of how to read the Lighthouse base station geometry memory from a
+Crazyflie
 """
 import logging
 import time
 
-import cflib.crtp
+import cflib.crtp  # noqa
+from cflib.crazyflie import Crazyflie
+from cflib.crazyflie.mem import MemoryElement
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
-
-URI = 'radio://0/80/250K'
-
 # Only output errors from the logging framework
+
 logging.basicConfig(level=logging.ERROR)
 
 
+class ReadMem:
+    def __init__(self, uri):
+        self.got_data = False
+
+        with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
+            mems = scf.cf.mem.get_mems(MemoryElement.TYPE_LH)
+
+            count = len(mems)
+            if count != 1:
+                raise Exception('Unexpected nr of memories found:', count)
+
+            print('Rquesting data')
+            mems[0].update(self._data_updated)
+
+            while not self.got_data:
+                time.sleep(1)
+
+    def _data_updated(self, mem):
+        mem.dump()
+        self.got_data = True
+
+
 if __name__ == '__main__':
+    # URI to the Crazyflie to connect to
+    uri = 'radio://0/80/2M'
+
     # Initialize the low-level drivers (don't list the debug drivers)
     cflib.crtp.init_drivers(enable_debug_driver=False)
 
-    with SyncCrazyflie(URI) as scf:
-        cf = scf.cf
-
-        # Set solid color effect
-        cf.param.set_value('ring.effect', '7')
-        # Set the RGB values
-        cf.param.set_value('ring.solidRed', '100')
-        cf.param.set_value('ring.solidGreen', '0')
-        cf.param.set_value('ring.solidBlue', '0')
-        time.sleep(2)
-
-        # Set black color effect
-        cf.param.set_value('ring.effect', '0')
-        time.sleep(1)
-
-        # Set fade to color effect
-        cf.param.set_value('ring.effect', '14')
-        # Set fade time i seconds
-        cf.param.set_value('ring.fadeTime', '1.0')
-        # Set the RGB values in one uint32 0xRRGGBB
-        cf.param.set_value('ring.fadeColor', '0x0000A0')
-        time.sleep(1)
-        cf.param.set_value('ring.fadeColor', '0x00A000')
-        time.sleep(1)
-        cf.param.set_value('ring.fadeColor', '0xA00000')
-        time.sleep(1)
+    ReadMem(uri)
