@@ -23,18 +23,13 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA  02110-1301, USA.
-import sys
 import unittest
 from test.support.asyncCallbackCaller import AsyncCallbackCaller
+from unittest.mock import MagicMock
 
 from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.utils.callbacks import Caller
-
-if sys.version_info < (3, 3):
-    from mock import MagicMock
-else:
-    from unittest.mock import MagicMock
 
 
 class SyncCrazyflieTest(unittest.TestCase):
@@ -145,7 +140,7 @@ class SyncCrazyflieTest(unittest.TestCase):
         self.assertFalse(self.sut.is_link_open())
         self._assertAllCallbacksAreRemoved()
 
-    def test_open_close_with_context_mangement(self):
+    def test_open_close_with_context_management(self):
         # Fixture
 
         # Test

@@ -29,6 +29,7 @@ USB driver for the Crazyradio USB dongle.
 """
 import logging
 import os
+import platform
 
 import usb
 
@@ -154,6 +155,8 @@ class Crazyradio:
             logger.warning('You should update to Crazyradio firmware V0.4+')
 
         # Reset the dongle to power up settings
+        if platform.system() == 'Linux':
+            self.handle.reset()
         self.set_data_rate(self.DR_2MPS)
         self.set_channel(2)
         self.arc = -1
@@ -278,10 +281,10 @@ class Crazyradio:
                     result = result + (i,)
             return result
 
-    # Data transferts
+    # Data transfers
     def send_packet(self, dataOut):
         """ Send a packet and receive the ack from the radio dongle
-            The ack contains information about the packet transmition
+            The ack contains information about the packet transmission
             and a data payload if the ack packet contained any """
         ackIn = None
         data = None
