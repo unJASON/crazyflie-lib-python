@@ -22,48 +22,56 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA  02110-1301, USA.
 """
-Example of how to read the Lighthouse base station geometry memory from a
-Crazyflie
+Example of how to read the Lighthouse base station geometry and
+calibration memory from a Crazyflie
 """
 import logging
-import time
+from threading import Event
 
 import cflib.crtp  # noqa
 from cflib.crazyflie import Crazyflie
-from cflib.crazyflie.mem import MemoryElement
+from cflib.crazyflie.mem import LighthouseMemHelper
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
-# Only output errors from the logging framework
 
+# Only output errors from the logging framework
 logging.basicConfig(level=logging.ERROR)
 
 
 class ReadMem:
     def __init__(self, uri):
-        self.got_data = False
+        self._event = Event()
 
         with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
-            mems = scf.cf.mem.get_mems(MemoryElement.TYPE_LH)
+            helper = LighthouseMemHelper(scf.cf)
 
-            count = len(mems)
-            if count != 1:
-                raise Exception('Unexpected nr of memories found:', count)
+            helper.read_all_geos(self._geo_read_ready)
+            self._event.wait()
 
-            print('Rquesting data')
-            mems[0].update(self._data_updated)
+            self._event.clear()
 
-            while not self.got_data:
-                time.sleep(1)
+            helper.read_all_calibs(self._calib_read_ready)
+            self._event.wait()
 
-    def _data_updated(self, mem):
-        mem.dump()
-        self.got_data = True
+    def _geo_read_ready(self, geo_data):
+        for id, data in geo_data.items():
+            print('---- Geometry for base station', id + 1)
+            data.dump()
+            print()
+        self._event.set()
+
+    def _calib_read_ready(self, calib_data):
+        for id, data in calib_data.items():
+            print('---- Calibration data for base station', id + 1)
+            data.dump()
+            print()
+        self._event.set()
 
 
 if __name__ == '__main__':
     # URI to the Crazyflie to connect to
-    uri = 'radio://0/80/2M'
+    uri = 'radio://0/80'
 
-    # Initialize the low-level drivers (don't list the debug drivers)
-    cflib.crtp.init_drivers(enable_debug_driver=False)
+    # Initialize the low-level drivers
+    cflib.crtp.init_drivers()
 
     ReadMem(uri)

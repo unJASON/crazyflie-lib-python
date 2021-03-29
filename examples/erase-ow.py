@@ -100,12 +100,12 @@ class EEPROMExample:
         print('Error when logging %s: %s' % (logconf.name, msg))
 
     def _stab_log_data(self, timestamp, data, logconf):
-        """Callback froma the log API when data arrives"""
+        """Callback from a the log API when data arrives"""
         print('[%d][%s]: %s' % (timestamp, logconf.name, data))
 
     def _connection_failed(self, link_uri, msg):
         """Callback when connection initial connection fails (i.e no Crazyflie
-        at the speficied address)"""
+        at the specified address)"""
         print('Connection to %s failed: %s' % (link_uri, msg))
         self.is_connected = False
 
@@ -124,8 +124,8 @@ if __name__ == '__main__':
     print('This example will not work with the BLE version of the nRF51'
           ' firmware (flashed on production units). See https://github.com'
           '/bitcraze/crazyflie-clients-python/issues/166')
-    # Initialize the low-level drivers (don't list the debug drivers)
-    cflib.crtp.init_drivers(enable_debug_driver=False)
+    # Initialize the low-level drivers
+    cflib.crtp.init_drivers()
     # Scan for Crazyflies and use the first one found
     print('Scanning interfaces for Crazyflies...')
     available = cflib.crtp.scan_interfaces()
